@@ -1,0 +1,37 @@
+{
+    "modules": [],
+    "properties": {
+        "backendModules": [],
+        "description": "ViewHelper for grouping Newsitems by Date",
+        "emConf": {
+            "category": "plugin",
+            "custom_category": "",
+            "dependsOn": "typo3 => 6.2\nnews => ",
+            "disableLocalization": false,
+            "disableVersioning": false,
+            "sourceLanguage": "en",
+            "state": "alpha",
+            "targetVersion": "6.2",
+            "version": "0.0.1"
+        },
+        "extensionKey": "news_grouped_by_date",
+        "name": "News grouped by Date",
+        "originalExtensionKey": "",
+        "persons": [
+            {
+                "company": "",
+                "email": "info@unconnect.net",
+                "name": "Alexander Nikolas Reuber",
+                "role": "Developer"
+            }
+        ],
+        "plugins": [],
+        "vendorName": "NewsGroupedByDate"
+    },
+    "wires": [],
+    "log": {
+        "last_modified": "2014-10-13 05:40",
+        "extension_builder_version": "6.2.0",
+        "be_user": "Alexander Reuber (1)"
+    }
+}
