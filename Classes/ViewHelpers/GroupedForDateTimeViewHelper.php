@@ -50,7 +50,7 @@ namespace TYPO3\NewsGroupedByDate\ViewHelpers;
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  * @api
  */
-class Tx_news_grouped_by_date_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
  
     /**
      * Iterates through elements of $each and renders child nodes
