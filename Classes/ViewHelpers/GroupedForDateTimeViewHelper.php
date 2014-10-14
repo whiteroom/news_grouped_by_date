@@ -1,5 +1,5 @@
 <?php
- 
+namespace TYPO3\NewsGroupedByDate\ViewHelpers;
 /*                                                                        *
  * This script belongs to the FLOW3 package "Fluid".                      *
  *                                                                        *
@@ -50,7 +50,7 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  * @api
  */
-class Tx_Assets_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class Tx_news_grouped_by_date_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
  
     /**
      * Iterates through elements of $each and renders child nodes
