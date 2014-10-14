@@ -1,0 +1,15 @@
+										{namespace m=TYPO3\NewsGroupedByDate\ViewHelpers}
+
+										<!-- Group by year -->
+
+										<m:groupedByDate each="{news}" as="myitemsyear" groupBy="date" format="%Y" groupKey="year" dateTimeKey="yearKey">
+										        <h2>{year}</h2>
+										        <m:groupedByDate each="{myitemsyear}" as="myitemsmonth" groupBy="date" format="%B" groupKey="month" dateTimeKey="monthKey">
+										            <h3>{month}</h3>
+										            <ul>
+										            <f:for each="{myitemsmonth}" as="myitem">
+										                <li>{myitem}</li>
+										            </f:for>
+										            </ul>
+										        </m:groupedByDate>
+										    </m:groupedByDate>
