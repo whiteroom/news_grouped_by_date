@@ -1,5 +1,4 @@
 <?php
-namespace TYPO3\NewsGroupedByDate\ViewHelpers;
 /*                                                                        *
  * This script belongs to the FLOW3 package "Fluid".                      *
  *                                                                        *
