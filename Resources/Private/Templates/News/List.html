@@ -6,11 +6,15 @@
 -->
 
 <f:section name="content">
+
 	<f:if condition="{news}">
+
 		<f:then>
-		<f:if condition="{settings.templateLayout} == 100">
-					<f:then>
-			<div class="home news-list-view">
+
+			<f:switch expression="{settings.templateLayout}">
+				<!-- Home List View -->
+				<f:case value="100">
+					<div class="home news-list-view">
 						<f:if condition="{settings.hidePagination}">
 							<f:then>
 								<f:for each="{news}" as="newsItem">
@@ -26,36 +30,58 @@
 							</f:else>
 						</f:if>
 						</div>
-
 					<div class="cycle-pager" id="pager"></div>	
-					</f:then>
-				
-				<f:else>
-				<div class="list news-list-view">
-					<f:if condition="{settings.hidePagination}">
-						<f:then>
-							<f:for each="{news}" as="newsItem">
-								<!-- NO Pagebrowser -->
-								<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
-							</f:for>
-						</f:then>
-						<f:else>
-							<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}">	
-								<f:for each="{paginatedNews}" as="newsItem">
-										<!-- Pagebrowser -->
-										<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
+				</f:case>
+
+				<!-- Grouped List View by Year -->
+
+				<f:case value="200"> 
+					<div style="border:1px solid red">
+                        <f:groupedFor each="{news}" as="groupedNews" groupBy="firstCategory" groupKey="cat">
+                                <div style="border:1px solid blue;padding:10px;margin:10px;">
+                                        <h1>{cat.title}</h1>
+                                        <f:for each="{groupedNews}" as="newsItem">
+                                                <div style="border:1px solid pink;padding:5px;margin:5px;">
+                                                        {newsItem.title}
+                                                </div>
+                                        </f:for>
+                                </div>
+                        </f:groupedFor>
+                </div>
+				</f:case>
+
+				<!-- Default Case: List View with optional Pagination -->
+				<f:defaultCase>
+					<div class="list news-list-view">
+						<f:if condition="{settings.hidePagination}">
+							<f:then>
+								<f:for each="{news}" as="newsItem">
+									<!-- NO Pagebrowser -->
+									<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
 								</f:for>
-							</n:widget.paginate>
-						</f:else>
-					</f:if>
+							</f:then>
+							<f:else>
+								<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}">	
+									<f:for each="{paginatedNews}" as="newsItem">
+											<!-- Pagebrowser -->
+											<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
+									</f:for>
+								</n:widget.paginate>
+							</f:else>
+						</f:if>
 					</div>
-				</f:else>
-				</f:if>
+				</f:defaultCase>
+
+			</f:switch>
+
 		</f:then>
+
 		<f:else>
 			<div class="no-news-found">
 				<f:translate key="list_nonewsfound" />
 			</div>
 		</f:else>
+
 	</f:if>
+
 </f:section>
