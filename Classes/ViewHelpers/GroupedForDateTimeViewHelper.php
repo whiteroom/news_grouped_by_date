@@ -1,4 +1,6 @@
 <?php
+namespace vendor\NewsEventfields\ViewHelpers;
+
 /*                                                                        *
  * This script belongs to the FLOW3 package "Fluid".                      *
  *                                                                        *
@@ -18,7 +20,7 @@
  *                                                                        *
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
- 
+
 /**
  * Grouped loop view helper for Datetime values.
  * Loops through the specified values
@@ -49,8 +51,8 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  * @api
  */
-class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
- 
+class GroupedForDateTimeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+
     /**
      * Iterates through elements of $each and renders child nodes
      *
@@ -60,6 +62,7 @@ class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_F
      * @param string $groupKey The name of the variable to store the current group
      * @param string $format The format for the datetime
      * @param string $dateTimeKey The name of the variable to store the current datetime
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
      * @return string Rendered string
      * @author Bastian Waidelich <bastian@typo3.org>
      * @author Thomas Allmer <at@delusionworld.com>
@@ -70,16 +73,16 @@ class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_F
         if ($each === NULL) {
             return '';
         }
-        
+
         if (is_object($each)) {
-            if (!$each instanceof Traversable) {
-                throw new Tx_Fluid_Core_ViewHelper_Exception('GroupedForViewHelper only supports arrays and objects implementing Traversable interface' , 1253108907);
+            if (!$each instanceof \Traversable) {
+                throw new \TYPO3\CMS\Fluid\Core\ViewHelper\Exception('GroupedForViewHelper only supports arrays and objects implementing Traversable interface' , 1253108907);
             }
             $each = iterator_to_array($each);
         }
- 
+
         $groups = $this->groupElements($each, $groupBy, $format);
- 
+
         foreach ($groups['values'] as $currentGroupIndex => $group) {
             $this->templateVariableContainer->add($groupKey, $groups['keys'][$currentGroupIndex]);
             $this->templateVariableContainer->add($dateTimeKey, $groups['dateTimeKeys'][$currentGroupIndex]);
@@ -91,13 +94,14 @@ class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_F
         }
         return $output;
     }
- 
+
     /**
      * Groups the given array by the specified groupBy property and format for the datetime.
      *
      * @param array $elements The array / traversable object to be grouped
      * @param string $groupBy Group by this property
      * @param string $format The format for the datetime
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
      * @return array The grouped array in the form array('keys' => array('key1' => [key1value], 'key2' => [key2value], ...), 'values' => array('key1' => array([key1value] => [element1]), ...), ...)
      * @author Bastian Waidelich <bastian@typo3.org>
      */
@@ -107,15 +111,23 @@ class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_F
             if (is_array($value)) {
                 $currentGroupIndex = isset($value[$groupBy]) ? $value[$groupBy] : NULL;
             } elseif (is_object($value)) {
-                $currentGroupIndex = Tx_Extbase_Reflection_ObjectAccess::getProperty($value, $groupBy);
+                $currentGroupIndex = \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getPropertyPath($value, $groupBy);
             } else {
-                throw new Tx_Fluid_Core_ViewHelper_Exception('GroupedForViewHelper only supports multi-dimensional arrays and objects' , 1253120365);
+                throw new \TYPO3\CMS\Fluid\Core\ViewHelper\Exception('GroupedForViewHelper only supports multi-dimensional arrays and objects' , 1253120365);
             }
-            $formatedDatetime = $currentGroupIndex->format($format);
+            if (strpos($format, '%') !== FALSE) {
+                $formatedDatetime = strftime($format, $currentGroupIndex->format('U'));
+            } else {
+                $formatedDatetime = $currentGroupIndex->format($format);
+            }
             $groups['dateTimeKeys'][$formatedDatetime] = $currentGroupIndex;
-            
-            $currentGroupIndex = $currentGroupIndex->format($format);
-            
+
+            if (strpos($format, '%') !== FALSE) {
+                $currentGroupIndex = strftime($format, $currentGroupIndex->format('U'));
+            } else {
+                $currentGroupIndex = $currentGroupIndex->format($format);
+            }
+
             $currentGroupKeyValue = $currentGroupIndex;
             if (is_object($currentGroupIndex)) {
                 $currentGroupIndex = spl_object_hash($currentGroupIndex);
@@ -126,5 +138,5 @@ class Tx_NewsGroupedByDate_ViewHelpers_GroupedForDateTimeViewHelper extends Tx_F
         return $groups;
     }
 }
- 
+
 ?>
