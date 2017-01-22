@@ -15,9 +15,8 @@
 		<f:then>
 
 			<f:if condition="{settings.templateLayout} == 100">
-
 				<f:then>
-					<!-- Home list view, grouped by year, modified partials -->
+					<!-- Home list view, grouped by year, no pagination, modified partials -->
 					<cx:groupedForDateTime each="{news}" as="newsitemsbyYears" groupBy="datetime" format="%Y" groupKey="year" dateTimeKey="yearKey">
 						<h2 class="byYears"><strong>{year}</strong></h2>
 						<f:for each="{newsitemsbyYears}" as="item">
@@ -25,7 +24,6 @@
 						</f:for>
 					</cx:groupedForDateTime>
 				</f:then>
-			
 			</f:if>
 
 			<f:if condition="{settings.templateLayout} == 200">
