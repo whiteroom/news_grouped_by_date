@@ -13,9 +13,9 @@
         
 	<f:if condition="{news}">
 		<f:then>
-
-			<f:if condition="{settings.templateLayout} == 100">
-				<f:then>
+		
+			<f:switch expression="{settings.templateLayout}">
+				<f:case value="100">
 					<!-- Home list view, grouped by year, no pagination, modified partials -->
 					<cx:groupedForDateTime each="{news}" as="newsitemsbyYears" groupBy="datetime" format="%Y" groupKey="year" dateTimeKey="yearKey">
 						<h2 class="byYears"><strong>{year}</strong></h2>
@@ -23,11 +23,10 @@
 							<f:render partial="List/Home" arguments="{newsItem: item,settings:settings,iterator:iterator}" />
 						</f:for>
 					</cx:groupedForDateTime>
-				</f:then>
-			</f:if>
-
-			<f:if condition="{settings.templateLayout} == 200">
-				<f:then>
+				
+				</f:case>
+				
+				<f:case value="200">
 					<f:if condition="{settings.hidePagination}">
 						<f:then>
 							<!-- Standard grouped by year list view, modified partials -->
@@ -50,12 +49,11 @@
 							</n:widget.paginate>
 						</f:else>
 					</f:if>
-				</f:then>
-			</f:if>
-
-			<f:if condition="{settings.templateLayout} == '' ">
-				<!-- Standard partials -->
-				<f:then>
+				</f:case>
+				
+				
+				<f:case default="TRUE">
+					<!-- Standard partials -->
 					<f:if condition="{settings.hidePagination}">
 						<f:then>
 							<f:for each="{news}" as="newsItem" iteration="iterator">
@@ -70,8 +68,8 @@
 							</n:widget.paginate>
 						</f:else>
 					</f:if>
-				</f:then>
-			</f:if>
+				</f:case>
+			</f:switch>
 
 		</f:then>
 		<f:else>
