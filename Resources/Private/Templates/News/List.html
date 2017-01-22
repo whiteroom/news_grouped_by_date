@@ -1,6 +1,8 @@
-{namespace n=Tx_News_ViewHelpers}
-{namespace grouped=Tx_NewsGroupedByDate_ViewHelpers}
-
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:n="http://typo3.org/ns/GeorgRinger/News/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+		  
+{namespace cx=vendor\NewsEventfields\ViewHelpers}
 <f:layout name="General" />
 <!--
 	=====================
@@ -15,72 +17,70 @@
 			<f:if condition="{settings.templateLayout} == 100">
 
 				<f:then>
-					<!-- Home list view -->
-					<div class="home news-list-view">
-						<f:if condition="{settings.hidePagination}">
-							<f:then>
-								<f:for each="{news}" as="newsItem">
-									<f:render partial="Home/Item" arguments="{newsItem: newsItem, settings:settings}" />
-								</f:for>
-							</f:then>
-							<f:else>
-								<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}">
-									<f:for each="{paginatedNews}" as="newsItem">
-										<f:render partial="Home/Item" arguments="{newsItem: newsItem, settings:settings}" />
-									</f:for>
-								</n:widget.paginate>
-							</f:else>
-						</f:if>
-					</div>
+					<!-- Home list view, grouped by year, modified partials -->
+					<cx:groupedForDateTime each="{news}" as="newsitemsbyYears" groupBy="datetime" format="%Y" groupKey="year" dateTimeKey="yearKey">
+						<h2 class="byYears"><strong>{year}</strong></h2>
+						<f:for each="{newsitemsbyYears}" as="item">
+							<f:render partial="List/Home" arguments="{newsItem: item,settings:settings,iterator:iterator}" />
+						</f:for>
+					</cx:groupedForDateTime>
 				</f:then>
 			
 			</f:if>
 
 			<f:if condition="{settings.templateLayout} == 200">
 				<f:then>
-					<!-- Grouped by year list view -->
-	                <div class="itemsListYearMonth">
-	                        <grouped:groupedForDateTime each="{news}" as="groupedNews" groupBy="datetime" format="Y" groupKey="year">
-	                                <h1>
-	                                        {year}
-	                                </h1>
-	                                <grouped:groupedForDateTime each="{groupedNews}" as="itemsByYear" groupBy="datetime" format="m" dateTimeKey="byMonth">
-	                                        <f:for each="{itemsByYear}" as="item">
-	                                                <div class="item">
-	                                                        <f:render partial="List/Item" arguments="{newsItem: item, settings:settings}" />
-	                                                </div>
-	                                        </f:for>
-	                                </grouped:groupedForDateTime>
-	                        </grouped:groupedForDateTime>
-	                </div>
+					<f:if condition="{settings.hidePagination}">
+						<f:then>
+							<!-- Standard grouped by year list view, modified partials -->
+							<cx:groupedForDateTime each="{news}" as="newsitemsbyYears" groupBy="datetime" format="%Y" groupKey="year" dateTimeKey="yearKey">
+								<h2 class="byYears"><strong>{year}</strong></h2>
+								<f:for each="{newsitemsbyYears}" as="item">
+									<f:render partial="List/Event" arguments="{newsItem: item,settings:settings,iterator:iterator}" />
+								</f:for>
+							</cx:groupedForDateTime>
+						</f:then>
+						
+						<f:else>
+							<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}" initial="{offset:settings.offset,limit:settings.limit}">
+								<cx:groupedForDateTime each="{paginatedNews}" as="newsitemsbyYears" groupBy="datetime" format="%Y" groupKey="year" dateTimeKey="yearKey">
+									<h2 class="byYears"><strong>{year}</strong></h2>
+									<f:for each="{newsitemsbyYears}" as="item">
+										<f:render partial="List/Event" arguments="{newsItem: item,settings:settings,iterator:iterator}" />
+									</f:for>
+								</cx:groupedForDateTime>
+							</n:widget.paginate>
+						</f:else>
+					</f:if>
 				</f:then>
 			</f:if>
 
 			<f:if condition="{settings.templateLayout} == '' ">
+				<!-- Standard partials -->
 				<f:then>
-	                <!-- Default list view with optional pagebrowser -->
-					<div class="list news-list-view">
-						<f:if condition="{settings.hidePagination}">
-							<f:then>
-								<f:for each="{news}" as="newsItem">
-									<!-- NO Pagebrowser -->
-									<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
-								</f:for>
-							</f:then>
-							<f:else>
-								<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}">	
-									<f:for each="{paginatedNews}" as="newsItem">
-											<!-- Pagebrowser -->
-											<f:render partial="List/Item" arguments="{newsItem: newsItem, settings:settings}" />
-									</f:for>
-								</n:widget.paginate>
-							</f:else>
-						</f:if>
-					</div>
+					<f:if condition="{settings.hidePagination}">
+						<f:then>
+							<f:for each="{news}" as="newsItem" iteration="iterator">
+								<f:render partial="List/Item" arguments="{newsItem: newsItem,settings:settings,iterator:iterator}" />
+							</f:for>
+						</f:then>
+						<f:else>
+							<n:widget.paginate objects="{news}" as="paginatedNews" configuration="{settings.list.paginate}" initial="{offset:settings.offset,limit:settings.limit}">
+							<f:for each="{paginatedNews}" as="newsItem" iteration="iterator">
+								<f:render partial="List/Item" arguments="{newsItem: newsItem,settings:settings,iterator:iterator}" />
+							</f:for>
+							</n:widget.paginate>
+						</f:else>
+					</f:if>
 				</f:then>
 			</f:if>
 
 		</f:then>
-    </f:if>
+		<f:else>
+			<div class="no-news-found">
+				<f:translate key="list_nonewsfound" />
+			</div>
+		</f:else>
+    	</f:if>
 
 </f:section>
